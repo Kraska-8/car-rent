@@ -1,6 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import About from './views/About.vue'
+import Checkout from './views/User/Checkout.vue'
+import Login from './views/Auth/Login.vue'
+import Registration from './views/Auth/Registration.vue'
+import Cars from './views/Cars.vue'
+import Contact from './views/Contact.vue'
+import Discount from './views/Discount.vue'
 
 Vue.use(Router)
 

@@ -1,21 +1,18 @@
 <template>
   <v-app>
-    <v-navigation-drawer app></v-navigation-drawer>
-    <v-toolbar app></v-toolbar>
-    <v-content>
-      <v-container fluid>
-        <h1>dhf</h1>
-        <router-view></router-view>
-      </v-container>
-    </v-content>
+    <Navbar />
     <v-footer app></v-footer>
   </v-app>
 </template>
 
 <script>
+import Navbar from "./components/UI/Navbar/Navbar.vue";
+
 export default {
   name: "App",
-  components: {},
+  components: {
+    Navbar
+  },
   data() {
     return {
       //
