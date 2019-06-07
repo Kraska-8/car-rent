@@ -1,71 +1,89 @@
 <template>
   <v-container>
-    <v-layout row>
-      <v-flex
-        xs12
-        sm6
-        offset-sm3
-      >
-        <v-breadcrumbs
-          :items="items"
-          divider=">"
-          class="pl-0"
+    <section v-if='!loading'>
+      <v-layout row>
+        <v-flex
+          xs12
+          sm6
+          offset-sm3
         >
-          <template v-slot:item="props">
-            <a
-              :href="props.item.href"
-              class="v-breadcrumbs__item"
-            >{{ props.item.text }}</a>
-            <a
-              v-if="props.item.disabled"
-              class="v-breadcrumbs__item v-breadcrumbs__item--disabled"
-            >{{ product.title }}</a>
-          </template>
-        </v-breadcrumbs>
-      </v-flex>
-    </v-layout>
+          <v-breadcrumbs
+            :items="items"
+            divider=">"
+            class="pl-0"
+          >
+            <template v-slot:item="props">
+              <a
+                :href="props.item.href"
+                class="v-breadcrumbs__item"
+              >{{ props.item.text }}</a>
+              <a
+                v-if="props.item.disabled"
+                class="v-breadcrumbs__item v-breadcrumbs__item--disabled"
+              >{{ product.title }}</a>
+            </template>
+          </v-breadcrumbs>
+        </v-flex>
+      </v-layout>
 
-    <v-layout
-      row
-      wrap
-    >
-      <v-flex
-        xs12
-        sm6
-        offset-sm3
+      <v-layout
+        row
+        wrap
       >
-        <v-layout>
-          <v-flex
-            xs12
-            lg6
-          >
-            <v-img
-              class="my-3"
-              :src="product.imageSrc"
-              aspect-ratio="1"
-            ></v-img>
-          </v-flex>
-          <v-flex
-            xs12
-            lg6
-            class="ml-4"
-          >
-            <h1>{{product.title}}</h1>
-            <p class="title">Описание:</p>
-            <p class="description">{{product.description}}</p>
-            <p class="price">Начиная от: <span>${{product.price}}</span></p>
-            <v-btn color="amber lighten-1">Редактировать</v-btn>
-            <v-btn color="amber lighten-1">Забронировать</v-btn>
-          </v-flex>
+        <v-flex
+          xs12
+          sm6
+          offset-sm3
+        >
+          <v-layout>
+            <v-flex
+              xs12
+              lg6
+            >
+              <v-img
+                class="my-3"
+                :src="product.imageSrc"
+                aspect-ratio="1"
+              ></v-img>
+            </v-flex>
+            <v-flex
+              xs12
+              lg6
+              class="ml-4"
+            >
+              <h1>{{product.title}}</h1>
+              <p class="title">Описание:</p>
+              <p class="description">{{product.description}}</p>
+              <p class="price">Начиная от: <span>${{product.price}}</span></p>
+              <app-edit-product
+                :product="product"
+                v-if="isOwner"
+              ></app-edit-product>
+              <app-buy-dialog :product="product"></app-buy-dialog>
+            </v-flex>
 
-        </v-layout>
-      </v-flex>
-    </v-layout>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+    </section>
+
+    <section
+      v-else
+      class="text-xs-center"
+    >
+      <v-progress-circular
+        :size="100"
+        color="amber"
+        indeterminate
+      ></v-progress-circular>
+    </section>
 
   </v-container>
 </template>
 
 <script>
+import * as firebase from "firebase";
+import EditProduct from "../components/Products/EditProduct";
 export default {
   props: ["id"],
   data() {
@@ -88,10 +106,19 @@ export default {
       ]
     };
   },
+  components: {
+    appEditProduct: EditProduct
+  },
   computed: {
     product() {
       const id = this.id;
       return this.$store.getters.productById(id);
+    },
+    loading() {
+      return this.$store.getters.loading;
+    },
+    isOwner() {
+      return this.product.ownerId == firebase.auth().currentUser.uid;
     }
   }
 };

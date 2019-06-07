@@ -1,8 +1,8 @@
 import * as firebase from 'firebase'
 
 class User {
-    constructor(userId) {
-        this.userId = userId
+    constructor(id) {
+        this.id = id
     }
 }
 
@@ -49,7 +49,8 @@ export default {
             commit('setUser', new User(payload.uid))
         },
         logoutUser({ commit }) {
-            firebase.auth().signOut
+
+            firebase.auth().signOut()
             commit('setUser', null)
         }
 

@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import * as firebase from 'firebase'
 import store from './store'
 // import Home from './views/Home.vue'
 // import About from './views/About.vue'
@@ -12,7 +13,7 @@ import store from './store'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -40,8 +41,8 @@ export default new Router({
     {
       path: '/new-car',
       name: 'addCar',
-      beforeEnter(to, from, next) {
-        store.getters.isUserLoggedIn ? next() : next('/login?loginError=true')
+      meta: {
+        auth: true
       },
       component: () => import('./components/Products/NewProduct.vue')
     },
@@ -58,24 +59,24 @@ export default new Router({
     {
       path: '/checkout',
       name: 'checkout',
-      beforeEnter(to, from, next) {
-        store.getters.isUserLoggedIn ? next() : next('/login?loginError=true')
+      meta: {
+        auth: true
       },
       component: () => import('./views/User/Checkout.vue')
     },
     {
       path: '/registration',
       name: 'registration',
-      beforeEnter(to, from, next) {
-        store.getters.isUserLoggedIn == null ? next() : next('/')
+      meta: {
+        auth: false
       },
       component: () => import('./views/Auth/Registration.vue')
     },
     {
       path: '/login',
       name: 'login',
-      beforeEnter(to, from, next) {
-        store.getters.isUserLoggedIn == null ? next() : next('/')
+      meta: {
+        auth: false
       },
       component: () => import('./views/Auth/Login.vue')
     },
@@ -86,3 +87,19 @@ export default new Router({
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const requiresAuth = to.matched.some(x => x.meta.auth)
+  const currentUser = firebase.auth().currentUser
+  if (requiresAuth && !currentUser) {
+    next('/login?loginError=true')
+  }
+  else if (requiresAuth && currentUser) {
+    next()
+  }
+  else {
+    next()
+  }
+})
+
+export default router;

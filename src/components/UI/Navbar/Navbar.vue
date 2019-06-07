@@ -142,6 +142,12 @@ export default {
             title: "Добавить",
             icon: "mdi-plus",
             url: "/new-car"
+          },
+          {
+            id: 8,
+            title: "Заказы",
+            icon: "mdi-heart-outline",
+            url: "/checkout"
           }
         ];
       }

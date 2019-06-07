@@ -80,10 +80,7 @@
                   color="orange"
                   :to="'/cars/car/' + product.id"
                 >Описание</v-btn>
-                <v-btn
-                  outline
-                  color="orange"
-                >Бронировать</v-btn>
+                <app-buy-dialog :product="product"></app-buy-dialog>
               </v-card-actions>
             </v-card>
           </v-flex>

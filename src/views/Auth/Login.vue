@@ -76,20 +76,14 @@
 </template>
 
 <script>
+import { rulesMixin } from "@/mixins";
 export default {
+  mixins: [rulesMixin],
   data() {
     return {
       email: "",
       password: "",
       valid: false,
-      emailRules: [
-        v => !!v || "Поле обязательно к заполнению",
-        v => /.+@.+/.test(v) || "Ввведите корректный e-mail адрес"
-      ],
-      passwordRules: [
-        v => !!v || "Поле обязательно к заполнению",
-        v => (v && v.length >= 6) || "Пароль должен быть не менее 6 символов"
-      ],
       items: [
         {
           text: "Главная",

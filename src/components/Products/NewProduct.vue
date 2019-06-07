@@ -54,31 +54,45 @@
             label="Промо"
           ></v-switch>
         </v-form>
-        <v-layout class="mb-3">
+        <v-layout
+          row
+          class="mb-3"
+        >
           <v-flex xs12>
-            <v-btn color="amber lighten-1">
+            <v-btn
+              color="amber lighten-1"
+              @click="upload"
+            >
               Загрузить фото
               <v-icon
                 right
                 dark
               >mdi-cloud-upload</v-icon>
             </v-btn>
+            <input
+              ref="fileInput"
+              type="file"
+              style="display:none;"
+              accept="image/*"
+              @change="onFileChange"
+            >
           </v-flex>
         </v-layout>
-        <v-layout>
+        <v-layout row>
           <v-flex xs12>
             <img
-              src=""
+              v-if="imageSrc"
+              :src="imageSrc"
               alt=""
               height="200"
             >
           </v-flex>
         </v-layout>
-        <v-layout>
+        <v-layout row>
           <v-flex xs12>
             <v-spacer></v-spacer>
             <v-btn
-              :disabled="!valid || loading"
+              :disabled="!valid || loading || !image"
               :loading="loading"
               color="amber lighten-1"
               @click="createProduct"
@@ -99,6 +113,8 @@ export default {
       promo: false,
       description: "",
       valid: false,
+      image: null,
+      imageSrc: "",
       items: [
         {
           text: "Главная",
@@ -120,14 +136,13 @@ export default {
   },
   methods: {
     createProduct() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate() && this.image) {
         const product = {
           title: this.title,
           price: this.price,
           promo: this.promo,
           description: this.description,
-          imageSrc:
-            "http://www.templates-preview.com/bootstrap-templates/300111914/images/gallery03.jpg"
+          image: this.image
         };
         this.$store
           .dispatch("createProduct", product)
@@ -136,6 +151,18 @@ export default {
           })
           .catch(() => {});
       }
+    },
+    upload() {
+      this.$refs.fileInput.click();
+    },
+    onFileChange(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = e => {
+        this.imageSrc = reader.result;
+      };
+      reader.readAsDataURL(file);
+      this.image = file;
     }
   }
 };
