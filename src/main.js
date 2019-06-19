@@ -28,7 +28,7 @@ firebase.auth().onAuthStateChanged(() => {
       router,
       store,
       created() {
-
+        this.$store.dispatch("fetchOrders");
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
             this.$store.dispatch('autoLoginUser', user)

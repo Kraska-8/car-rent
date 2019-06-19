@@ -6,6 +6,7 @@
     <template v-slot:activator="{ on }">
       <v-btn
         color="amber lighten-1"
+        class="ml-0"
         v-on="on"
       >Забронировать</v-btn>
     </template>

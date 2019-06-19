@@ -1,12 +1,12 @@
 import * as firebase from 'firebase'
-import { truncate } from 'fs';
+
 class Order {
-    constructor(name, phone, productId, done = false, id = null) {
-        this.name = name,
-            this.phone = phone,
-            this.productId = productId,
-            this.done = done,
-            this.id = id
+    constructor(productId, title, description, imageSrc) {
+        this.productId = productId,
+            this.title = title,
+            this.description = description,
+            this.imageSrc = imageSrc
+
     }
 }
 
@@ -21,8 +21,8 @@ export default {
     },
 
     actions: {
-        async createOrder({ commit, getters }, { name, phone, productId }) {
-            const order = new Order(name, phone, productId)
+        async makeFav({ commit, getters }, { productId, title, description, imageSrc }) {
+            const order = new Order(productId, title, description, imageSrc)
             commit('clearError')
             try {
                 await firebase.database().ref(`/users/${getters.user.id}/orders`).push(order)
@@ -32,6 +32,19 @@ export default {
 
             }
         },
+        async deleteFav({ commit, getters }, productId) {
+            commit('clearError')
+            console.log(productId);
+
+            try {
+                const orderD = await firebase.database().ref(`/users/${getters.user.id}/orders`).child(productId).remove();
+            } catch (error) {
+                commit('setError', error.message)
+                throw error
+
+            }
+        },
+
         async fetchOrders({ commit }) {
             commit('clearError')
             commit('setLoading', true)
@@ -39,10 +52,13 @@ export default {
             try {
                 const fbVal = await firebase.database().ref(`/users/${firebase.auth().currentUser.uid}/orders`).once('value')
                 const orders = fbVal.val()
-                Object.keys(orders).forEach(key => {
-                    const order = orders[key]
-                    resultOrders.push(new Order(order.name, order.phone, order.productId, order.done, key))
-                })
+                if (orders) {
+                    Object.keys(orders).forEach(key => {
+                        const order = orders[key]
+                        resultOrders.push(new Order(order.productId, order.title, order.description, order.imageSrc))
+                    })
+                }
+
                 commit('loadOrders', resultOrders)
                 commit('setLoading', false)
             } catch (error) {
@@ -63,15 +79,22 @@ export default {
     },
 
     getters: {
-        undoneOrders(state) {
-            return state.orders.filter(order => !order.done)
+        orders(state) {
+            if (state.orders) {
+                return state.orders
+            }
         },
-        doneOrders(state) {
-            return state.orders.filter(order =>  order.done)
+        ordersCount(state) {
+            if (state.orders) {
+                return state.orders.length
+            }
         },
-        orders(state, getters) {
-            return getters.undoneOrders.concat(getters.doneOrders)
+        orderById(state) {
+            return orderId => {
+                return state.orders.find(order => order.productId == orderId)
+            }
         }
+
 
     }
 }

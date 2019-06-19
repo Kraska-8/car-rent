@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <section v-if='!loading'>
+    <section v-if="!loading && product">
       <v-layout row>
         <v-flex
           xs12
@@ -55,11 +55,40 @@
               <p class="title">Описание:</p>
               <p class="description">{{product.description}}</p>
               <p class="price">Начиная от: <span>${{product.price}}</span></p>
-              <app-edit-product
+              <!-- <app-edit-product
                 :product="product"
                 v-if="isOwner"
-              ></app-edit-product>
+              ></app-edit-product> -->
+              {{order}}
               <app-buy-dialog :product="product"></app-buy-dialog>
+              <div v-if="product.id !== order.productId">
+
+                <v-btn
+                  flat
+                  small
+                  class="ml-0"
+                  @click="onSave"
+                >
+                  <v-icon
+                    dark
+                    left
+                  >favorite</v-icon>Добавить в избранное
+                </v-btn>
+              </div>
+              <div v-else>
+
+                <v-btn
+                  flat
+                  small
+                  class="ml-0"
+                  @click="onDelete"
+                >
+                  <v-icon
+                    dark
+                    left
+                  >favorite</v-icon>Удалить из избранного
+                </v-btn>
+              </div>
             </v-flex>
 
           </v-layout>
@@ -68,7 +97,7 @@
     </section>
 
     <section
-      v-else
+      v-else-if="!loading && !product"
       class="text-xs-center"
     >
       <v-progress-circular
@@ -109,6 +138,22 @@ export default {
   components: {
     appEditProduct: EditProduct
   },
+  methods: {
+    onSave() {
+      this.$store.dispatch("makeFav", {
+        title: this.product.title,
+        description: this.product.description,
+        imageSrc: this.product.imageSrc,
+        productId: this.id
+      });
+      this.$store.dispatch("fetchOrders");
+    },
+    onDelete() {
+      const id = this.id;
+      this.$store.dispatch("deleteFav", id);
+      // this.$store.dispatch("fetchOrders");
+    }
+  },
   computed: {
     product() {
       const id = this.id;
@@ -117,8 +162,9 @@ export default {
     loading() {
       return this.$store.getters.loading;
     },
-    isOwner() {
-      return this.product.ownerId == firebase.auth().currentUser.uid;
+    order() {
+      const id = this.id;
+      return this.$store.getters.orderById(id);
     }
   }
 };

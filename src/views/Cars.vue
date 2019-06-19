@@ -15,7 +15,7 @@
     </v-layout>
     <v-layout
       row
-      v-if="!loading && myProducts.length !=0 "
+      v-if="!loading && products.length !=0 "
     >
       <v-flex
         xs12
@@ -25,7 +25,7 @@
         <h1>Наши автомобили</h1>
         <v-card
           class="my-3"
-          v-for="(product, i) in myProducts"
+          v-for="(product, i) in products"
           :key="i"
         >
           <v-img
@@ -51,7 +51,7 @@
 
       </v-flex>
     </v-layout>
-    <v-layout v-else-if="!loading && myProducts.length ==0">
+    <v-layout v-else-if="!loading && products.length ==0">
       <v-flex
         xs-12
         class="text-xs-center"
@@ -93,8 +93,8 @@ export default {
     };
   },
   computed: {
-    myProducts() {
-      return this.$store.getters.myProducts;
+    products() {
+      return this.$store.getters.products;
     },
     loading() {
       return this.$store.getters.loading;

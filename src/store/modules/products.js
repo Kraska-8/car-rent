@@ -7,8 +7,7 @@ class Product {
             this.description = description,
             this.imageSrc = imageSrc,
             this.promo = promo,
-            this.id = id,
-            this.ownerId = ownerId
+            this.id = id
     }
 }
 

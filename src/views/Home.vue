@@ -35,6 +35,7 @@
             xs12
             sm6
             md4
+            pd-5
             lg3
             v-for="(product, i) in products"
             :key="i"

@@ -1,19 +1,21 @@
 <template>
-  <v-app>
+  <v-app class="app">
     <Navbar />
     <Snackbar v-if="error" />
-    <v-footer app></v-footer>
+    <Footer app></Footer>
   </v-app>
 </template>
 
 <script>
 import Navbar from "./components/UI/Navbar/Navbar.vue";
 import Snackbar from "./components/UI/Snackbar/Snackbar.vue";
+import Footer from "./components/UI/Footer/Footer.vue";
 export default {
   name: "App",
   components: {
     Navbar,
-    Snackbar
+    Snackbar,
+    Footer
   },
   data() {
     return {
@@ -29,9 +31,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-h1 {
-  color: red;
+<style lang="scss">
+html,
+body {
+  height: 100%;
+}
+
+.application--wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
 }
 </style>
 

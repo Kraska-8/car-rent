@@ -87,6 +87,20 @@
             color="amber lighten-1"
           >{{ item.icon }}</v-icon>{{ item.title }}
         </v-btn>
+
+        <v-btn
+          flat
+          v-if="isUserLoggedIn"
+          :to="'/checkout'"
+        >
+          <v-badge color="purple">
+            <template v-slot:badge>
+              <span>{{countFave}}</span>
+            </template>
+            Избранное
+          </v-badge>
+        </v-btn>
+
         <v-btn
           flat
           v-if="isUserLoggedIn"
@@ -98,6 +112,7 @@
     </v-toolbar>
     <v-content>
       <router-view></router-view>
+
     </v-content>
   </div>
 </template>
@@ -113,6 +128,9 @@ export default {
   computed: {
     isUserLoggedIn() {
       return this.$store.getters.isUserLoggedIn;
+    },
+    countFave() {
+      return this.$store.getters.ordersCount;
     },
     links() {
       if (this.isUserLoggedIn) {
@@ -142,12 +160,6 @@ export default {
             title: "Добавить",
             icon: "mdi-plus",
             url: "/new-car"
-          },
-          {
-            id: 8,
-            title: "Заказы",
-            icon: "mdi-heart-outline",
-            url: "/checkout"
           }
         ];
       }
@@ -181,6 +193,7 @@ export default {
       ];
     }
   },
+
   methods: {
     onLogout() {
       this.$store.dispatch("logoutUser");
