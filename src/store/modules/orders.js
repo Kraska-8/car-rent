@@ -1,12 +1,12 @@
 import * as firebase from 'firebase'
 
 class Order {
-    constructor(productId, title, description, imageSrc) {
+    constructor(productId, title, description, imageSrc, id = null) {
         this.productId = productId,
             this.title = title,
             this.description = description,
-            this.imageSrc = imageSrc
-
+            this.imageSrc = imageSrc,
+            this.id = id
     }
 }
 
@@ -17,7 +17,7 @@ export default {
     mutations: {
         loadOrders(state, payload) {
             state.orders = payload
-        }
+        },
     },
 
     actions: {
@@ -25,7 +25,7 @@ export default {
             const order = new Order(productId, title, description, imageSrc)
             commit('clearError')
             try {
-                await firebase.database().ref(`/users/${getters.user.id}/orders`).push(order)
+                const orderBase = await firebase.database().ref(`/users/${getters.user.id}/orders`).push(order)
             } catch (error) {
                 commit('setError', error.message)
                 throw error
@@ -37,7 +37,9 @@ export default {
             console.log(productId);
 
             try {
-                const orderD = await firebase.database().ref(`/users/${getters.user.id}/orders`).child(productId).remove();
+                const orderDel = await firebase.database().ref(`/users/${getters.user.id}/orders/${productId}`).remove()
+
+
             } catch (error) {
                 commit('setError', error.message)
                 throw error
@@ -55,7 +57,7 @@ export default {
                 if (orders) {
                     Object.keys(orders).forEach(key => {
                         const order = orders[key]
-                        resultOrders.push(new Order(order.productId, order.title, order.description, order.imageSrc))
+                        resultOrders.push(new Order(order.productId, order.title, order.description, order.imageSrc, key))
                     })
                 }
 

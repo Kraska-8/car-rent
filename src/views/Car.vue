@@ -59,34 +59,19 @@
                 :product="product"
                 v-if="isOwner"
               ></app-edit-product> -->
-              {{order}}
               <app-buy-dialog :product="product"></app-buy-dialog>
-              <div v-if="product.id !== order.productId">
+              <div>
 
                 <v-btn
                   flat
                   small
                   class="ml-0"
-                  @click="onSave"
+                  @click="!order ? onSave() : onDelete()"
                 >
                   <v-icon
-                    dark
                     left
-                  >favorite</v-icon>Добавить в избранное
-                </v-btn>
-              </div>
-              <div v-else>
-
-                <v-btn
-                  flat
-                  small
-                  class="ml-0"
-                  @click="onDelete"
-                >
-                  <v-icon
-                    dark
-                    left
-                  >favorite</v-icon>Удалить из избранного
+                    :color="order ? 'pink' : 'dark'"
+                  >favorite</v-icon>{{!order ? 'Добавить в избранное' : 'Удалить из избранного'}}
                 </v-btn>
               </div>
             </v-flex>
@@ -149,9 +134,9 @@ export default {
       this.$store.dispatch("fetchOrders");
     },
     onDelete() {
-      const id = this.id;
+      const id = this.order.id;
       this.$store.dispatch("deleteFav", id);
-      // this.$store.dispatch("fetchOrders");
+      this.$store.dispatch("fetchOrders");
     }
   },
   computed: {
