@@ -10,13 +10,13 @@ Vue.component('app-buy-dialog', BuyDialogComponent)
 
 
 var firebaseConfig = {
-  apiKey: "AIzaSyDHwOnuUbv2B5mCtoyFFKgTxrlEHewzIGo",
+  apiKey: "",
   authDomain: "car-rent-c3a49.firebaseapp.com",
   databaseURL: "https://car-rent-c3a49.firebaseio.com",
   projectId: "car-rent-c3a49",
   storageBucket: "car-rent-c3a49.appspot.com",
-  messagingSenderId: "887173597144",
-  appId: "1:887173597144:web:db71732c43440c80"
+  messagingSenderId: "",
+  appId: ""
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
